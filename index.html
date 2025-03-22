@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="utf-8">
+    <title>Joyce's 雨量查詢小工具</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link rel="apple-touch-icon" sizes="256x256" href="img/icon_umbrella.png">
+    <link rel="icon" type="image/x-icon" href="img/icon_umbrella.ico">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.css" rel="stylesheet">
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v1.0.0/mapbox-gl-language.js'></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.js"></script>
+    <link href="css/index.css" rel="stylesheet">
+</head>
+
+<body>
+    <a href="https://open-meteo.com/en/docs" target="_blank" id="api-doc">雨量更新頻率</a>
+    <div class="query-panel">
+        <select id="select-api-type" onChange="onApiTypeChanged()">
+            <!-- https://open-meteo.com/en/docs/ecmwf-api?timezone=Asia%2FSingapore&forecast_days=1&past_days=1&hourly=rain -->
+            <option value="ecmwf_ifs025">ECMWF - 歐洲中期預報中心</option>
+            <option value="gfs_seamless">NOAA U.S. - 美國國家海洋暨大氣總署</option>
+            <option value="meteofrance_seamless">Météo-France - 法國氣象局</option>
+            <option value="icon_seamless">DWD Germany - 德國氣象局（DWD）</option>
+            <option value="ukmo_seamless">UK Met Office - 英國氣象局</option>
+            <option value="jma_seamless">JMA Japan - 日本醫學會</option>
+            <option value="metno_seamless">MET Norway - 挪威氣象局</option>
+            <option value="gem_seamless">GEM Canada - 加拿大氣象局</option>
+            <option value="bom_access_global">BOM Australia - 澳洲氣象局（BOM）</option>
+            <option value="cma_grapes_global">CMA China - 中國氣象局（CMA）</option>
+            <option value="knmi_seamless">KNMI Netherlands - 韓國海事管理協會</option>
+            <option value="dmi_seamless">DMI Denmark - 直接投資管理</option>
+        </select>
+        <div style="padding-top:5px">
+            <select id="select-location" onChange="onLocationChanged()">
+                <option value="">請選擇指定地點</option>
+            </select>
+        </div>
+    </div>
+    <div id="map"></div>
+    <pre id="coordinates" class="coordinates"></pre>
+    <pre id="btn-dialog" class="coordinates dialog" onClick="openDialog()">看圖表</pre>
+    <div id="modal-container">
+        <div class="my-modal">
+            <div id="model-name"></div>
+            <div id="history-container"></div>
+            <label class="btn" onClick="closeDialog()">關閉</label>
+        </div>
+    </div> 
+    <script src="js/env.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/map.js"></script>
+    <script>initMap();</script>
+</body>
+
+</html>
