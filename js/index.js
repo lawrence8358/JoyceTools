@@ -31,10 +31,9 @@ let lastLat = 0, lastLng = 0;
 function callWeatherApi(lat, lng) {
     DomElm.btnDialog.style.display = 'none';
 
-    const model = DomElm.apiType.value;
-    const modelName = DomElm.apiType.selectedOptions[0].textContent;
+    const model = DomElm.apiType.value; 
 
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&hourly=rain&models=${model}&timezone=Asia%2FSingapore&past_days=2&forecast_days=1`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&hourly=rain&models=${model}&timezone=Asia%2FSingapore&past_days=1&forecast_days=2`;
     fetch(url)
         .then(response => response.json())
         .then(data => {
@@ -45,9 +44,7 @@ function callWeatherApi(lat, lng) {
             DomElm.btnDialog.style.display = 'block';
 
             lastLat = lat;
-            lastLng = lng;
-
-            DomElm.modelName.innerHTML = modelName;
+            lastLng = lng; 
         });
 }
 
@@ -93,7 +90,7 @@ function drawTable(times, rains) {
         // 建立降雨量列
         const rainRow = document.createElement("tr");
         const rainHeader = document.createElement("td");
-        rainHeader.textContent = "降雨量";
+        rainHeader.textContent = "雨量";
         rainHeader.style.fontWeight = "bold";
         rainRow.appendChild(rainHeader);
 
@@ -131,8 +128,16 @@ function closeDialog() {
     DomElm.modal.style.pointerEvents = 'none';
 }
 
+function syncApiTypeList() {
+    DomElm.modelName.innerHTML = DomElm.apiType.innerHTML;
+}
 
-function onApiTypeChanged() {
+function onApiTypeChanged(type) { 
+    if (type === 1)
+        DomElm.modelName.value = DomElm.apiType.value;
+    else
+        DomElm.apiType.value = DomElm.modelName.value;
+
     localStorage.setItem(STORAGE_API_TYPE, DomElm.apiType.value);
     callWeatherApi(lastLat, lastLng);
 } 

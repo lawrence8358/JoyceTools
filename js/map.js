@@ -17,6 +17,7 @@ function initMap() {
     // localStorage 設定上一次選擇的 API Type
     if (localStorage.getItem(STORAGE_API_TYPE)) {
         DomElm.apiType.value = localStorage.getItem(STORAGE_API_TYPE);
+        DomElm.modelName.value = localStorage.getItem(STORAGE_API_TYPE);
     }
 
     // 設定上一次選擇的 zoom level
