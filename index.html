@@ -41,7 +41,8 @@
     <pre id="coordinates" class="coordinates"></pre>
     <pre id="btn-dialog" class="coordinates dialog" onClick="openDialog()">看圖表</pre>
     <div id="modal-container">
-        <div class="my-modal">
+        <div id="my-modal">
+            <img src="img/loading.svg"/>
             <select id="model-name" onChange="onApiTypeChanged(2)" style="margin: 5px;"></select>
             <div id="history-container" class="mobile"></div>
             <label class="btn" onClick="closeDialog()">關閉</label>

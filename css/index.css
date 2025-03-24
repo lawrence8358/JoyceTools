@@ -63,7 +63,7 @@ button:active {
     z-index: 99;
 }
 
-.my-modal {
+#my-modal {
     background-color: #fff;
     display: inline-block;
     border-radius: 10px;
@@ -71,6 +71,27 @@ button:active {
     max-width: 100vw;
     max-height: 100dvh;
     text-align: center;
+}
+
+#my-modal img {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+}
+
+#my-modal.loading {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+#my-modal.loading img {
+    display: block;
+}
+
+#my-modal.loading select {
+    pointer-events: none;
 }
 
 .btn {

@@ -8,6 +8,9 @@ const DomElm = {
     get modal() {
         return document.getElementById('modal-container');
     },
+    get modalBody() {
+        return document.getElementById('my-modal');
+    },
     get modelName() {
         return document.getElementById('model-name');
     },
@@ -30,8 +33,9 @@ let lastLat = 0, lastLng = 0;
 
 function callWeatherApi(lat, lng) {
     DomElm.btnDialog.style.display = 'none';
+    DomElm.modalBody.classList.add('loading');
 
-    const model = DomElm.apiType.value; 
+    const model = DomElm.apiType.value;
 
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&hourly=rain&models=${model}&timezone=Asia%2FSingapore&past_days=1&forecast_days=2`;
     fetch(url)
@@ -42,9 +46,10 @@ function callWeatherApi(lat, lng) {
             drawTable(hourly.time, hourly.rain);
 
             DomElm.btnDialog.style.display = 'block';
+            DomElm.modalBody.classList.remove('loading');
 
             lastLat = lat;
-            lastLng = lng; 
+            lastLng = lng;
         });
 }
 
@@ -132,7 +137,7 @@ function syncApiTypeList() {
     DomElm.modelName.innerHTML = DomElm.apiType.innerHTML;
 }
 
-function onApiTypeChanged(type) { 
+function onApiTypeChanged(type) {
     if (type === 1)
         DomElm.modelName.value = DomElm.apiType.value;
     else
