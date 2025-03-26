@@ -4,7 +4,7 @@ let defaultLocations = [
     { name: '馬拉威', location: [8.011122088147808, 124.29910025623845] },
     { name: 'Polomolok', location: [6.224143960583939, 125.06120996085342] },
     { name: 'Prosperidad', location: [8.604465887322705, 125.87170942354645] },
-    { name: '澳洲里士滿機場', location: [-20.69997985667292, 143.11760277301158] },
+    { name: '澳洲里士滿機場', location: [-20.702, 143.115] },
 ];
 let _marker = null;
 let _map = null;
@@ -40,6 +40,8 @@ function initMap() {
     // 禁用雙擊放大地圖(不然在手機版本上會和雙擊顯示雨量資訊衝突)
     map.doubleClickZoom.disable();
 
+    map.addControl(new mapboxgl.NavigationControl());
+    
     const language = new MapboxLanguage({ defaultLanguage: 'zh-Hant' });
     map.addControl(language);
 
