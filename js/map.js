@@ -4,7 +4,8 @@ let defaultLocations = [
     { name: '馬拉威', location: [8.011122088147808, 124.29910025623845] },
     { name: 'Polomolok', location: [6.224143960583939, 125.06120996085342] },
     { name: 'Prosperidad', location: [8.604465887322705, 125.87170942354645] },
-]
+    { name: '澳洲里士滿機場', location: [-20.69997985667292, 143.11760277301158] },
+];
 let _marker = null;
 let _map = null;
 
