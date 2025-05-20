@@ -8,7 +8,7 @@
 
 ---
 ## 使用方式
-如果你想要使用這個小工具，請先至 MapBox 註冊帳號，並取得 Access Token 後，到 js/env.js 中修改以下程式碼：
+如果你想要使用這個小工具，請先至 MapBox 註冊帳號，並取得 Access Token 後，到 Frontend/js/env.js 中修改以下程式碼：
 ``` js
 const mapAccessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';
 ```
