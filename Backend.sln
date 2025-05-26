@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35728.132
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib", "Lib\Lib.csproj", "{869F93AA-9C6E-490A-BFA5-E32ACD17C354}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcrConsoleTools", "OcrConsoleTools\OcrConsoleTools.csproj", "{140ABD5C-691A-4EE6-8BB8-6BD7C05A4A95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "WebApp\WebApp.csproj", "{FC87DF89-67B4-4911-80E8-E42076A38254}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{869F93AA-9C6E-490A-BFA5-E32ACD17C354}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{869F93AA-9C6E-490A-BFA5-E32ACD17C354}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{869F93AA-9C6E-490A-BFA5-E32ACD17C354}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{869F93AA-9C6E-490A-BFA5-E32ACD17C354}.Release|Any CPU.Build.0 = Release|Any CPU
+		{140ABD5C-691A-4EE6-8BB8-6BD7C05A4A95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{140ABD5C-691A-4EE6-8BB8-6BD7C05A4A95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{140ABD5C-691A-4EE6-8BB8-6BD7C05A4A95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{140ABD5C-691A-4EE6-8BB8-6BD7C05A4A95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC87DF89-67B4-4911-80E8-E42076A38254}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC87DF89-67B4-4911-80E8-E42076A38254}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC87DF89-67B4-4911-80E8-E42076A38254}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC87DF89-67B4-4911-80E8-E42076A38254}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

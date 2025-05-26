@@ -1,0 +1,1 @@
+const mapAccessToken = 'pk.eyJ1IjoibGF3cmVuY2U4MzU4IiwiYSI6ImNtOGpwMDhqbTBqbW8ya3NpYWh2OHRjaG4ifQ.5NM9RU2UxG21QqcZvVIYHQ';

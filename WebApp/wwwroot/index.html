@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joyce's 小工具</title>
+    <style>
+        body {
+            font-family: '微軟正黑體', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .tool-button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #4a90e2;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .tool-button:hover {
+            background-color: #357ab8;
+            transform: scale(1.05);
+        }
+
+        .tool-button img {
+            width: 24px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Joyce's 小工具</h1>
+
+    <div class="button-container">
+        <button class="tool-button" onclick="window.location.href='rain'">
+            <img src="rain/img/icon_umbrella.png">
+            雨量查詢
+        </button>
+        <button class="tool-button" onclick="window.location.href='earthquake'">
+            <img src="earthquake/img/earthquake.png">
+            微地動查詢
+        </button>
+    </div>
+
+</body>
+
+</html>

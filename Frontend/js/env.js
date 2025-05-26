@@ -1,1 +1,0 @@
-const mapAccessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';

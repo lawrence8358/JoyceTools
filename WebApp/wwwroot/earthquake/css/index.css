@@ -1,0 +1,26 @@
+* {
+    font-family: '微軟正黑體', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.sticky-query-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    /* Bootstrap 的 navbar z-index 是 1030，避免被遮蓋 */
+    background-color: #f8f9fa;
+    padding: 16px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.logo {
+    width: 35px;
+}
+
+#div_error {
+    display: none;
+}
