@@ -1,148 +1,110 @@
-const DomElm = {
-    get coordinates() {
-        return document.getElementById('coordinates');
-    },
-    get btnDialog() {
-        return document.getElementById('btn-dialog');
-    },
-    get modal() {
-        return document.getElementById('modal-container');
-    },
-    get modalBody() {
-        return document.getElementById('my-modal');
-    },
-    get modelName() {
-        return document.getElementById('model-name');
-    },
-    get apiType() {
-        return document.getElementById('select-api-type');
-    },
-    get location() {
-        return document.getElementById('select-location');
-    }
-};
+function init() {
+    // 初始化結束日期為今天，開始日期為前 7 天
+    const today = new Date();
+    const endDate = today.toISOString().split('T')[0];
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() - 7);
+    const startDateStr = startDate.toISOString().split('T')[0];
 
-
-const STORAGE_CENTER = 'center';
-const STORAGE_API_TYPE = 'apiType';
-const STORAGE_ZOOM = 'zoom';
-const STORAGE_FIRST_LOAD = 'firstload';
-
-let lastLat = 0, lastLng = 0;
-
-
-function callWeatherApi(lat, lng) {
-    DomElm.btnDialog.style.display = 'none';
-    DomElm.modalBody.classList.add('loading');
-
-    const model = DomElm.apiType.value;
-
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&hourly=rain&models=${model}&timezone=Asia%2FSingapore&past_days=1&forecast_days=2`;
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            const hourly = data.hourly;
-
-            drawTable(hourly.time, hourly.rain);
-
-            DomElm.btnDialog.style.display = 'block';
-            DomElm.modalBody.classList.remove('loading');
-
-            lastLat = lat;
-            lastLng = lng;
-        });
+    $('#startDate').val(startDateStr);
+    $('#endDate').val(endDate);
 }
 
+async function queryData() {
+    $('#div_error').hide();
 
-function drawTable(times, rains) {
-    const containerElm = document.getElementById('history-container');
-    containerElm.innerHTML = "";
+    const start = $('#startDate').val();
+    const end = $('#endDate').val();
 
-    // 依日期分組，key 格式為 "YYYY-MM-DD"
-    const groups = {};
-    for (let i = 0; i < times.length; i++) {
-        const dateObj = new Date(times[i]);
-        const year = dateObj.getFullYear();
-        const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
-        const day = dateObj.getDate().toString().padStart(2, '0');
-        const dateKey = `${year}-${month}-${day}`;
-        const hour = dateObj.getHours().toString().padStart(2, '0');
+    if (!start || !end) {
+        $('#div_error').text('請選擇開始和結束日期').show();
+        return;
+    }
 
-        if (!groups[dateKey]) {
-            groups[dateKey] = [];
+    try {
+        const data = await getApiData(start, end);
+        let html = `<div class="table-responsive">
+                        <table class="table table-bordered table-hover mt-3 bg-white">
+                        <thead class="table-light">
+                            <tr>
+                            <th>日期</th>
+                            <th>經緯度</th>
+                            <th>規模</th>
+                            <th>深度</th>
+                            <th>圖片</th>
+                            <th>來源</th>
+                            </tr>
+                        </thead>
+                    <tbody>`;
+
+        if (data.length === 0) {
+            html += '<tr><td colspan="6" class="text-center">查無資料</td></tr>';
         }
-        groups[dateKey].push({ hour, rain: rains[i] });
+        else {
+            for (const row of data) {
+                // 2025-05-18T13:25:00 格式轉換為 YYYY-MM-DD HH:mm
+                const earthquakeDate = new Date(row.earthquakeDate).toLocaleString('zh-TW', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+
+                // 開啟 google map 地圖
+                const latlng = `${row.latitude},${row.longitude}`;
+                const mapUrl = `https://www.google.com/maps/place/${latlng}/@${latlng},8z`;
+
+                html += `<tr>
+                        <td class="align-middle">${earthquakeDate}</td>
+                        <td class="align-middle text-center">
+                            <a href="${mapUrl}" target="_blank">
+                                ${row.latitude}, ${row.longitude}
+                            </a>
+                        </td>
+                        <td class="align-middle text-end">${row.magnitude}</td>
+                        <td class="align-middle text-end">${row.maxDepth}</td>
+                        <td class="align-middle text-center">
+                            <a href="/api/Earthquake/Image/Original/${row.imageFileName}" data-lightbox="image-1" data-title="${earthquakeDate}">
+                                <img src="/api/Earthquake/Image/Thumb/${row.imageFileName}" alt="縮圖">
+                            </a>
+                        </td>
+                        <td class="align-middle text-center">
+                            <a href="${row.linkUrl}" target="_blank">
+                                <img src="img/x.png" alt="@cwaeew84024" >
+                            </a>
+                        </td>
+                    </tr>`;
+            }
+
+        }
+
+        html += `       </tbody>
+                    </table>
+                </div>`;
+
+        $('#div_result').html(html);
+    } catch (error) {
+        $('#div_error').text('API 呼叫失敗：' + error).show();
+        return;
     }
+}
 
-    // 為每一天建立一個 table
-    for (const dateKey in groups) {
-        // 建立 table 元素
-        const table = document.createElement("table");
-        table.style.marginBottom = "20px"; // 每個 table 間隔一些距離
-
-        // 依日期格式化日期顯示，格式為 MM-dd
-        const parts = dateKey.split("-");
-        const dateDisplay = `${parts[1]}-${parts[2]}`;
-
-        // 建立時間（header）列
-        const timeRow = document.createElement("tr");
-        // 第一個單元格顯示日期 MM-dd
-        const dateHeader = document.createElement("td");
-        dateHeader.textContent = dateDisplay;
-        dateHeader.style.fontWeight = "bold";
-        timeRow.appendChild(dateHeader);
-
-        // 建立降雨量列
-        const rainRow = document.createElement("tr");
-        const rainHeader = document.createElement("td");
-        rainHeader.textContent = "雨量";
-        rainHeader.style.fontWeight = "bold";
-        rainRow.appendChild(rainHeader);
-
-        // 取出該天的資料陣列，依序填入剩餘欄位
-        const dayData = groups[dateKey];
-        dayData.forEach(item => {
-            // 時間列僅顯示小時
-            const timeCell = document.createElement("td");
-            timeCell.textContent = item.hour;
-            timeRow.appendChild(timeCell);
-
-            // 降雨量列對應填入數值
-            const rainCell = document.createElement("td");
-            rainCell.textContent = item.rain;
-            rainRow.appendChild(rainCell);
+function getApiData(sdate, edate) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: '/api/Earthquake/Query',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ sdate, edate }),
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                reject(error);
+            }
         });
-
-        table.appendChild(timeRow);
-        table.appendChild(rainRow);
-
-        // 將 table 加入到容器 div 中
-        containerElm.appendChild(table);
-    }
-}
-
-
-function openDialog() {
-    DomElm.modal.style.opacity = 1;
-    DomElm.modal.style.pointerEvents = 'unset';
-}
-
-
-function closeDialog() {
-    DomElm.modal.style.opacity = 0;
-    DomElm.modal.style.pointerEvents = 'none';
-}
-
-function syncApiTypeList() {
-    DomElm.modelName.innerHTML = DomElm.apiType.innerHTML;
-}
-
-function onApiTypeChanged(type) {
-    if (type === 1)
-        DomElm.modelName.value = DomElm.apiType.value;
-    else
-        DomElm.apiType.value = DomElm.modelName.value;
-
-    localStorage.setItem(STORAGE_API_TYPE, DomElm.apiType.value);
-    callWeatherApi(lastLat, lastLng);
+    });
 } 
