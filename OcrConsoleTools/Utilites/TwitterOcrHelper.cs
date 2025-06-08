@@ -127,7 +127,8 @@ namespace OcrConsoleTools.Utilites
                 {
                     Type = 1,
                     PostDate = date,
-                    Magnitude = decimal.TryParse(value, out var magnitude) ? magnitude : null,
+                    // 地震規模有出現 -0.0 這樣的資料格式，因此先處理找不到地震規模的一律視為 0 
+                    Magnitude = decimal.TryParse(value, out var magnitude) ? magnitude : 0,
                     FileName = fileName,
                     LinkUrl = linkUrl
                 };

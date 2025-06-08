@@ -10,6 +10,12 @@ namespace Lib.EFCore
         {
         }
 
+
+        public void InitJournalMode()
+        {
+            Database.ExecuteSqlRaw("PRAGMA journal_mode=DELETE;");
+        }
+
         /// <summary>
         /// 取得資料庫內最新的地震資訊的貼文資料
         /// </summary>
@@ -24,7 +30,7 @@ namespace Lib.EFCore
             if (entity != null) return entity.PostDate;
 
 
-            entity = Earthquake 
+            entity = Earthquake
                 .OrderByDescending(x => x.PostDate)
                 .FirstOrDefault();
 

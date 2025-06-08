@@ -13,16 +13,17 @@ namespace OcrConsoleTools
             var config = UtilityHelper.GetConfig();
 
             ProcessEarthquakeOCRAndSaveToDb(config);
-            //  DebugEarthquakeOCR(config);
+            // DebugEarthquakeOCR(config);
         }
 
         private static void DebugEarthquakeOCR(AppSettings config)
         {
             var debugFiles = new List<string>
             {
-                $"{config.TwitterDownloadDir}\\2025-03-05 00-57-img_2532.jpg"
+                // $"{config.TwitterDownloadDir}\\2025-03-05 00-57-img_2532.jpg"
                 // "App_Data\\sample\\test.jpg",
-                //"App_Data\\sample\\test2.jpg",
+                // "App_Data\\sample\\test2.jpg",
+                "App_Data\\sample\\zero.jpg",
             };
 
             foreach (var filePath in debugFiles)
@@ -40,6 +41,7 @@ namespace OcrConsoleTools
 
             using var dbContext = new EarthquakeDbContext(options);
             dbContext.Database.EnsureCreated();
+            dbContext.InitJournalMode();
 
             var lastPostDate = dbContext.GetEarthquakePostDate();
 
@@ -81,7 +83,7 @@ namespace OcrConsoleTools
                 var fileName = Path.GetFileName(csvFile);
                 var destPath = Path.Combine(processedDir, fileName);
                 File.Move(csvFile, destPath, true);
-            } 
+            }
         }
 
         private static void ShowResult(EarthquakeDtoModel? result, string filePath)
@@ -103,7 +105,7 @@ namespace OcrConsoleTools
                 decimal? magnitude = result.Magnitude;
                 Console.WriteLine($"檔案【{fileName}】，震度規模: {magnitude}");
 
-                if (magnitude == null || !magnitude.Value.ToString().Contains('.'))
+                if (magnitude == null)
                     throw new Exception($"檔案【{fileName}】的震度規模無法轉換成數字");
             }
             else
