@@ -334,5 +334,5 @@ ASALocalRun/
 
 .config
 
-/OcrConsoleTools/App_Data/Earthquake.db*
+/DataSyncConsoleTools/App_Data/Earthquake.db*
 **/**.user

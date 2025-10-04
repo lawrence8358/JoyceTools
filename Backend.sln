@@ -5,7 +5,7 @@ VisualStudioVersion = 17.12.35728.132
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib", "Lib\Lib.csproj", "{869F93AA-9C6E-490A-BFA5-E32ACD17C354}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcrConsoleTools", "OcrConsoleTools\OcrConsoleTools.csproj", "{140ABD5C-691A-4EE6-8BB8-6BD7C05A4A95}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataSyncConsoleTools", "DataSyncConsoleTools\DataSyncConsoleTools.csproj", "{140ABD5C-691A-4EE6-8BB8-6BD7C05A4A95}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "WebApp\WebApp.csproj", "{FC87DF89-67B4-4911-80E8-E42076A38254}"
 EndProject

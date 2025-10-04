@@ -1,4 +1,4 @@
-﻿namespace OcrConsoleTools.Models
+﻿namespace DataSyncConsoleTools.Models
 {
     internal class TwitterInfo
     {

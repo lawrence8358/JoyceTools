@@ -1,42 +1,27 @@
-﻿using Lib.EFCore;
+using DataSyncConsoleTools.Utilites;
+using Lib.EFCore;
 using Lib.Models;
 using Lib.Utilites;
 using Microsoft.EntityFrameworkCore;
-using OcrConsoleTools.Utilites;
 
-namespace OcrConsoleTools
+namespace DataSyncConsoleTools.Services
 {
-    internal static class Program
+    internal class EarthquakeSyncService
     {
-        static void Main(string[] args)
-        {
-            var config = UtilityHelper.GetConfig();
+        private readonly AppSettings _config;
 
-            ProcessEarthquakeOCRAndSaveToDb(config);
-            // DebugEarthquakeOCR(config);
+        public EarthquakeSyncService(AppSettings config)
+        {
+            _config = config;
         }
 
-        private static void DebugEarthquakeOCR(AppSettings config)
-        {
-            var debugFiles = new List<string>
-            {
-                // $"{config.TwitterDownloadDir}\\2025-03-05 00-57-img_2532.jpg"
-                // "App_Data\\sample\\test.jpg",
-                // "App_Data\\sample\\test2.jpg",
-                "App_Data\\sample\\zero.jpg",
-            };
-
-            foreach (var filePath in debugFiles)
-            {
-                var result = TwitterOcrHelper.GetEarthquakeInfo(filePath, DateTime.Now, "");
-                ShowResult(result, filePath);
-            }
-        }
-
-        private static void ProcessEarthquakeOCRAndSaveToDb(AppSettings config)
+        /// <summary>
+        /// 處理地震 OCR 資料並儲存到資料庫
+        /// </summary>
+        public void ProcessEarthquakeOCRAndSaveToDb()
         {
             var options = new DbContextOptionsBuilder<EarthquakeDbContext>()
-                .UseSqlite(config.SQLitePath)
+                .UseSqlite(_config.SQLitePath)
                 .Options;
 
             using var dbContext = new EarthquakeDbContext(options);
@@ -44,8 +29,7 @@ namespace OcrConsoleTools
             dbContext.InitJournalMode();
 
             var lastPostDate = dbContext.GetEarthquakePostDate();
-
-            var downloadDir = config.TwitterDownloadDir;
+            var downloadDir = _config.TwitterDownloadDir;
 
             // 找資料夾內檔案時間最新的 CSV 檔案
             var csvFiles = Directory.GetFiles(downloadDir, "*.csv");
@@ -83,6 +67,26 @@ namespace OcrConsoleTools
                 var fileName = Path.GetFileName(csvFile);
                 var destPath = Path.Combine(processedDir, fileName);
                 File.Move(csvFile, destPath, true);
+            }
+        }
+
+        /// <summary>
+        /// 除錯用：測試地震 OCR 功能
+        /// </summary>
+        public void DebugEarthquakeOCR()
+        {
+            var debugFiles = new List<string>
+            {
+                // $"{_config.TwitterDownloadDir}\\2025-03-05 00-57-img_2532.jpg"
+                // "App_Data\\sample\\test.jpg",
+                // "App_Data\\sample\\test2.jpg",
+                "App_Data\\sample\\zero.jpg",
+            };
+
+            foreach (var filePath in debugFiles)
+            {
+                var result = TwitterOcrHelper.GetEarthquakeInfo(filePath, DateTime.Now, "");
+                ShowResult(result, filePath);
             }
         }
 

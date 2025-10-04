@@ -1,13 +1,13 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using Lib.EFCore;
-using OcrConsoleTools.Models;
+using DataSyncConsoleTools.Models;
 using System.Drawing;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Tesseract;
 
-namespace OcrConsoleTools.Utilites
+namespace DataSyncConsoleTools.Utilites
 {
     internal static class TwitterOcrHelper
     {
