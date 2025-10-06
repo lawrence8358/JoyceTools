@@ -9,7 +9,10 @@ namespace DataSyncConsoleTools.Models
 {
     internal class Options
     {
-        [Option('o', "type1", Required = false, HelpText = "地震資訊圖片的 OCR 辨識")]
-        public bool IsProcessEarthquakeOCRA { get; set; } 
+        [Option('e', "earthquake", Required = false, HelpText = "地震資訊圖片的 OCR 辨識")]
+        public bool IsProcessEarthquakeOCRA { get; set; }
+
+        [Option('t', "tide", Required = false, HelpText = "潮汐資料同步")]
+        public bool IsProcessTideSync { get; set; } 
     }
 }
