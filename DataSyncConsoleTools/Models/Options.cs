@@ -13,6 +13,10 @@ namespace DataSyncConsoleTools.Models
         public bool IsProcessEarthquakeOCRA { get; set; }
 
         [Option('t', "tide", Required = false, HelpText = "潮汐資料同步")]
-        public bool IsProcessTideSync { get; set; } 
+        public bool IsProcessTideSync { get; set; }
+
+
+        [Option('k', "kml", Required = false, HelpText = "產生 KML 檔案")]
+        public bool IsGenerateKML { get; set; }
     }
 }
