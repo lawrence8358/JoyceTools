@@ -1,13 +1,20 @@
 function init() {
     // 初始化結束日期為今天，開始日期為前 7 天
     const today = new Date();
-    const endDate = today.toISOString().split('T')[0];
+    const endDateStr = formatDateToYMD(today);
     const startDate = new Date(today);
     startDate.setDate(today.getDate() - 7);
-    const startDateStr = startDate.toISOString().split('T')[0];
+    const startDateStr = formatDateToYMD(startDate);
 
     $('#startDate').val(startDateStr);
-    $('#endDate').val(endDate);
+    $('#endDate').val(endDateStr);
+}
+ 
+function formatDateToYMD(date) {
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
 }
 
 async function queryData() {
