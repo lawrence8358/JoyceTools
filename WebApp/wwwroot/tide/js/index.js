@@ -1,19 +1,16 @@
 function init() {
-    // 使用台北時間 (UTC+8)
-    const now = new Date();
-    // 取得台北時間的今天日期
-    const taipeiOffset = 8 * 60; // UTC+8 轉換為分鐘
-    const taipeiTime = new Date(now.getTime() + (taipeiOffset * 60 * 1000));
-    
-    // 結束日期：明天 (例如今天6號，結束7號)
-    const endDate = new Date(taipeiTime);
-    endDate.setDate(taipeiTime.getDate() + 1);
-    const endDateStr = endDate.toISOString().split('T')[0];
-    
-    // 開始日期：前天 (例如今天6號，開始4號)
-    const startDate = new Date(taipeiTime);
-    startDate.setDate(taipeiTime.getDate() - 2);
+    // 只用系統日期，不考慮時區
+    const today = new Date();
+    // 開始日期：昨天
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() - 1);
+    // 結束日期：明天
+    const endDate = new Date(today);
+    endDate.setDate(today.getDate() + 1);
+
+    // 格式化為 yyyy-mm-dd
     const startDateStr = startDate.toISOString().split('T')[0];
+    const endDateStr = endDate.toISOString().split('T')[0];
 
     $('#startDate').val(startDateStr);
     $('#endDate').val(endDateStr);
