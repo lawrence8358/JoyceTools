@@ -188,10 +188,18 @@ namespace DataSyncConsoleTools.Utilites
                 throw new Exception("高度文字為空");
 
             // 尋找符號和數字
+            // 正常資料應該 05:44▲ 2.1 米
+            // 特殊資料出現 00:30▼ -0.1 米
             var regex = new Regex(@"[▲▼]\s*(\d+\.?\d*)\s*米?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             var heightMatch = regex.Match(decodedText);
             if (!heightMatch.Success)
-                throw new Exception($"無法解析高度，格式錯誤: '{decodedText}'");
+            {
+                // 判斷是否有負號的情況
+                regex = new Regex(@"[▲▼]\s*(-\d+\.?\d*)\s*米?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                heightMatch = regex.Match(decodedText);
+                if (!heightMatch.Success)
+                    throw new Exception($"無法解析高度，格式錯誤: '{decodedText}'");
+            }
 
             var heightValue = decimal.Parse(heightMatch.Groups[1].Value, CultureInfo.InvariantCulture);
             return DetermineSignFromDecodedText(decodedText, heightValue);
