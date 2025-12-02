@@ -336,3 +336,5 @@ ASALocalRun/
 
 /DataSyncConsoleTools/App_Data/Earthquake.db*
 **/**.user
+/WebApp/AppData/cwaeew84024/*.jpg 
+/WebApp/AppData/cwaeew84024/Processed

@@ -39,7 +39,7 @@ namespace DataSyncConsoleTools.Utilites
                 using (var reader = new StreamReader(csvFilePath))
                 using (var csv = new CsvReader(reader, config))
                 {
-                    for (int i = 0; i < 5; i++)
+                    for (int i = 0; i < 4; i++)
                     {
                         reader.ReadLine();
                     }
@@ -181,7 +181,7 @@ namespace DataSyncConsoleTools.Utilites
         {
             var bytes = CropImagePixels(imagePath, cropHeight);
 #if DEBUG
-            File.WriteAllBytes(@"C:\debug.jpg", bytes);
+            // File.WriteAllBytes(@"D:\debug.jpg", bytes);
 #endif 
             // 取得辨識結果
             var text = GetOrcText(bytes, whitelist);
@@ -193,7 +193,7 @@ namespace DataSyncConsoleTools.Utilites
         {
             var bytes = CropImagePixels(imagePath, x: x, y: y, width: width, height: height);
 #if DEBUG
-            File.WriteAllBytes(@"C:\debug.jpg", bytes);
+            // File.WriteAllBytes(@"D:\debug.jpg", bytes);
 #endif 
 
             // 取得辨識結果

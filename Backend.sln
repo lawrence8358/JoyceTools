@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35728.132
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11222.16 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib", "Lib\Lib.csproj", "{869F93AA-9C6E-490A-BFA5-E32ACD17C354}"
 EndProject
@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "方案項目", "方案項�
 	ProjectSection(SolutionItems) = preProject
 		Readme.md = Readme.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{E6F190E7-B675-6E01-F209-BD476091BC92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{FC87DF89-67B4-4911-80E8-E42076A38254}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC87DF89-67B4-4911-80E8-E42076A38254}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC87DF89-67B4-4911-80E8-E42076A38254}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6F190E7-B675-6E01-F209-BD476091BC92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6F190E7-B675-6E01-F209-BD476091BC92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6F190E7-B675-6E01-F209-BD476091BC92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6F190E7-B675-6E01-F209-BD476091BC92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

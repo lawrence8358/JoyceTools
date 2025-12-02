@@ -1,6 +1,8 @@
-using Lib.EFCore;
+Ôªøusing Lib.EFCore;
 using Microsoft.AspNetCore.Mvc;
-using SkiaSharp;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using WebApp.Models;
 
 namespace WebApp.Controllers
@@ -74,7 +76,8 @@ namespace WebApp.Controllers
             if (!System.IO.File.Exists(imagePath))
                 return NotFound();
 
-            return PhysicalFile(imagePath, "image/jpeg");
+            var fileInfo = new FileInfo(imagePath);
+            return PhysicalFile(fileInfo.FullName, "image/jpeg");
         }
 
         #endregion
@@ -83,25 +86,20 @@ namespace WebApp.Controllers
 
         private static MemoryStream GetThumbnailStream(string imagePath)
         {
-            // ¡Yπœ
-            using var input = System.IO.File.OpenRead(imagePath);
-            using var original = SKBitmap.Decode(input);
+            // Á∏ÆÂúñ
+            using var image = Image.Load(imagePath);
             int maxWidth = 50;
-            float ratio = (float)maxWidth / original.Width;
+            float ratio = (float)maxWidth / image.Width;
             int newWidth = maxWidth;
-            int newHeight = (int)(original.Height * ratio);
+            int newHeight = (int)(image.Height * ratio);
 
-            // ´ÿ•ﬂ¡Yπœµe•¨
-            var resizedInfo = new SKImageInfo(newWidth, newHeight);
-            using var surface = SKSurface.Create(resizedInfo);
-            var canvas = surface.Canvas;
-            canvas.Clear(SKColors.Transparent);
-            canvas.DrawBitmap(original, new SKRect(0, 0, newWidth, newHeight));
-            using var image = surface.Snapshot();
+            // Ë™øÊï¥Â§ßÂ∞è
+            image.Mutate(x => x.Resize(newWidth, newHeight));
+
             var ms = new MemoryStream();
-
-            // ΩsΩX¶® JPEG 
-            image.Encode(SKEncodedImageFormat.Jpeg, 90).SaveTo(ms);
+            // Á∑®Á¢ºÊàê JPEG
+            var encoder = new JpegEncoder { Quality = 90 };
+            image.Save(ms, encoder);
             ms.Position = 0;
             return ms;
         }

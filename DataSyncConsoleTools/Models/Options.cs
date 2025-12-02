@@ -18,5 +18,8 @@ namespace DataSyncConsoleTools.Models
 
         [Option('k', "kml", Required = false, HelpText = "產生 KML 檔案")]
         public bool IsGenerateKML { get; set; }
+
+        [Option('w', "twitter", Required = false, HelpText = "Twitter 資料下載")]
+        public bool IsProcessTwitterDownload { get; set; }
     }
 }

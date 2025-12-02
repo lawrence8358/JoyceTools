@@ -19,7 +19,7 @@ namespace DataSyncConsoleTools.Services
         /// 處理地震 OCR 資料並儲存到資料庫
         /// </summary>
         public void ProcessEarthquakeOCRAndSaveToDb()
-        {
+        { 
             var options = new DbContextOptionsBuilder<EarthquakeDbContext>()
                 .UseSqlite(_config.SQLitePath)
                 .Options;
@@ -29,7 +29,7 @@ namespace DataSyncConsoleTools.Services
             dbContext.InitJournalMode();
 
             var lastPostDate = dbContext.GetEarthquakePostDate();
-            var downloadDir = _config.TwitterDownloadDir;
+            var downloadDir = Path.Combine(_config.TwitterDownloadDir, _config.TwitterUserAccount);
 
             // 找資料夾內檔案時間最新的 CSV 檔案
             var csvFiles = Directory.GetFiles(downloadDir, "*.csv");
