@@ -50,7 +50,7 @@ namespace DataSyncConsoleTools.Services
 
                 foreach (var fileName in data.FileNames)
                 {
-                    var filePath = $"{downloadDir}\\{fileName}";
+                    var filePath = Path.Combine(downloadDir, fileName);
                     var result = TwitterOcrHelper.GetEarthquakeInfo(filePath, date, linkUrl);
 
                     ShowResult(result, filePath);
