@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CORS 測試工具</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .test-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔒 CORS 政策測試工具</h1>
+    
+    <div class="test-section">
+        <h3>測試設定</h3>
+        <label>API 網址:</label>
+        <input type="text" id="apiUrl" value="http://localhost:5000" placeholder="http://localhost:5000">
+    </div>
+
+    <div class="test-section">
+        <h3>測試案例</h3>
+        <button id="testQueryBtn">測試 Query API (GET)</button>
+        <button id="testImportBtn">測試 Import API (POST)</button>
+        <button id="testCorsBtn">測試 CORS 預檢 (OPTIONS)</button>
+    </div>
+
+    <div id="result" style="display: none;"></div>
+
+    <script>
+        const apiUrlInput = document.getElementById('apiUrl');
+        const resultDiv = document.getElementById('result');
+
+        // 測試資料
+        const testData = {
+            extractTime: new Date().toISOString(),
+            locations: [{
+                name: "Sydney",
+                timezone: 10.5,
+                url: "https://zh.tideschart.com/Australia/New-South-Wales/Sydney",
+                data: [{
+                    date: "周五 26",
+                    tide1: { time: "01:18", value: "▲ 1.34 米", type: "高潮" },
+                    tide2: { time: "06:49", value: "▼ 0.65 米", type: "低潮" },
+                    tide3: { time: "13:10", value: "▲ 1.66 米", type: "高潮" },
+                    tide4: { time: "19:55", value: "▼ 0.44 米", type: "低潮" }
+                }]
+            }]
+        };
+
+        function showResult(message, type) {
+            resultDiv.textContent = message;
+            resultDiv.className = type;
+            resultDiv.style.display = 'block';
+        }
+
+        // 測試 Query API
+        document.getElementById('testQueryBtn').addEventListener('click', async function() {
+            const apiUrl = apiUrlInput.value;
+            showResult('正在測試 Query API...', 'info');
+
+            try {
+                const response = await fetch(`${apiUrl}/api/Tide/Query`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        sdate: new Date().toISOString(),
+                        edate: new Date().toISOString()
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult(`✅ Query API 測試成功！\n\n回應狀態: ${response.status}\n回應資料: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult(`⚠️ Query API 回應錯誤\n\n狀態碼: ${response.status}\n錯誤訊息: ${await response.text()}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Query API 測試失敗\n\n錯誤訊息: ${error.message}\n\n可能原因:\n1. WebApp 服務未啟動\n2. CORS 設定錯誤\n3. 網址設定錯誤`, 'error');
+            }
+        });
+
+        // 測試 Import API
+        document.getElementById('testImportBtn').addEventListener('click', async function() {
+            const apiUrl = apiUrlInput.value;
+            showResult('正在測試 Import API...', 'info');
+
+            try {
+                const response = await fetch(`${apiUrl}/api/Tide/Import`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult(`✅ Import API 測試成功！\n\n回應狀態: ${response.status}\n匯入結果: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult(`⚠️ Import API 回應錯誤\n\n狀態碼: ${response.status}\n錯誤訊息: ${await response.text()}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Import API 測試失敗\n\n錯誤訊息: ${error.message}\n\n可能原因:\n1. WebApp 服務未啟動\n2. CORS 設定錯誤\n3. 網址設定錯誤`, 'error');
+            }
+        });
+
+        // 測試 CORS 預檢
+        document.getElementById('testCorsBtn').addEventListener('click', async function() {
+            const apiUrl = apiUrlInput.value;
+            showResult('正在測試 CORS 預檢...', 'info');
+
+            try {
+                const response = await fetch(`${apiUrl}/api/Tide/Import`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': window.location.origin,
+                        'Access-Control-Request-Method': 'POST',
+                        'Access-Control-Request-Headers': 'content-type'
+                    }
+                });
+
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                };
+
+                showResult(`✅ CORS 預檢測試完成！\n\n回應狀態: ${response.status}\n\nCORS Headers:\n${JSON.stringify(corsHeaders, null, 2)}\n\n來源: ${window.location.origin}`, 'success');
+            } catch (error) {
+                showResult(`❌ CORS 預檢測試失敗\n\n錯誤訊息: ${error.message}\n\n這表示 CORS 設定可能有問題`, 'error');
+            }
+        });
+    </script>
+</body>
+</html>

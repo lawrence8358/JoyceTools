@@ -126,9 +126,53 @@ X(Twitter) 上有一個帳號 @cwaeew84024，會不定時發佈台灣三級以�
 3. **印度洋** (British Indian Ocean Territory)
 4. **東京** (Tokyo, Japan)
 
+### ⚠️ Cloudflare 防護說明
+由於潮汐資料來源網站 (zh.tideschart.com) 啟用了 Cloudflare 防爬蟲驗證，原有的自動爬蟲方案已失效。現改用 **Chrome 擴充功能** 方案手動提取資料。
+
+### 資料同步方式
+
+#### 改用 Chrome 擴充功能 + API 直接上傳
+1. **啟動 API 服務**
+   ```bash
+   cd WebApp
+   dotnet run
+   ```
+   預設執行在 `http://localhost:5000`
+
+2. **安裝 Chrome 擴充功能**
+   - 在 Chrome 瀏覽器開啟 `chrome://extensions/`
+   - 啟用右上角的「開發人員模式」
+   - 點擊「載入未封裝項目」
+   - 選擇 `TideDataExtractor` 資料夾
+
+3. **配置 API 網址**（如果使用非預設網址）
+   - 點擊擴充功能圖示
+   - 在「API 網址」欄位輸入自訂網址（預設為 `http://localhost:5000`）
+
+4. **提取並上傳資料**
+   - **自動模式**（推薦）：點擊「📦 一次提取全部地點」，擴充功能會依序開啟各地點頁面並自動提取
+   - **手動模式**：
+     1. 手動開啟 tideschart.com 的任一地點頁面
+     2. 點擊「📝 提取此地點」按鈕
+     3. 重複步驟 1-2 完成所有地點
+   - 提取完成後點擊「⬆️ 上傳到資料庫」
+
+5. **驗證資料**
+   - 瀏覽器開啟 `http://localhost:5000/tide`
+   - 檢查是否顯示最新的潮汐資料
+
+#### CORS 安全設定
+WebApp 的 CORS 政策已設定為僅允許：
+- Chrome 擴充功能（`chrome-extension://`）
+- 本機測試（`localhost`）
+
+如需在生產環境使用，請修改 `WebApp/Program.cs` 中的 CORS 設定。
+
+詳細擴充功能說明請參閱 [TideDataExtractor/README.md](TideDataExtractor/README.md)
+
 ---
 ### 使用方式 
-此專案的資料來源依定要先透過 `DataSyncConsoleTools` 完成資料抓取，然後執行 `WebApp` 這個 NetCore 專案，啟動後即可透過瀏覽器執行 `http://localhost:5000/tide` 來查詢資料。  
+執行 `WebApp` 這個 NetCore 專案，啟動後即可透過瀏覽器執行 `http://localhost:5000/tide` 來查詢資料。  
 
 ---
 ### 功能預覽

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>潮汐資料擷取器</title>
+  <style>
+    body {
+      width: 400px;
+      padding: 20px;
+      font-family: 'Microsoft YaHei', sans-serif;
+    }
+    h2 {
+      margin: 0 0 15px 0;
+      color: #2c3e50;
+      font-size: 18px;
+    }
+    .info {
+      background: #ecf0f1;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .location-select {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-size: 13px;
+      color: #34495e;
+    }
+    select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #bdc3c7;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    /* 統一按鈕基本樣式 */
+    button {
+      width: 100%;
+      padding: 10px;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      background: #3498db;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+    button:disabled {
+      background: #95a5a6;
+      cursor: not-allowed;
+    }
+    #status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 13px;
+      display: none;
+    }
+    #status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    #status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    #status.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+    .instructions {
+      font-size: 12px;
+      color: #7f8c8d;
+      margin-top: 10px;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 4px;
+    }
+    .instructions ol {
+      margin: 5px 0;
+      padding-left: 20px;
+    }
+    .instructions li {
+      margin: 5px 0;
+    }
+    /* URL 操作區域 */
+    .url-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .url-btn {
+      flex: 1;
+      padding: 10px;
+      background: #16a085;
+      margin-bottom: 0;
+    }
+    .url-btn:hover {
+      background: #138d75;
+    }
+    /* 重新整理按鈕 */
+    .reload-btn {
+      background: #e67e22;
+    }
+    .reload-btn:hover {
+      background: #d35400;
+    }
+    /* 調試按鈕 */
+    .debug-btn {
+      background: #95a5a6;
+      margin-top: 5px;
+    }
+    .debug-btn:hover {
+      background: #7f8c8d;
+    }
+    /* 提取全部按鈕 */
+    .extract-all-btn {
+      background: #9b59b6;
+    }
+    .extract-all-btn:hover {
+      background: #8e44ad;
+    }
+    /* 上傳按鈕 */
+    .upload-btn {
+      background: #27ae60;
+    }
+    .upload-btn:hover {
+      background: #219a52;
+    }
+    /* API 設定區域 */
+    .api-settings {
+      margin-top: 10px;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .api-settings label {
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+    .api-settings input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #bdc3c7;
+      border-radius: 4px;
+      font-size: 12px;
+      box-sizing: border-box;
+    }
+    #debugInfo {
+      margin-top: 10px;
+      padding: 10px;
+      background: #2c3e50;
+      color: #ecf0f1;
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h2>🌊 潮汐資料提取器</h2>
+  
+  <div class="info">
+    當前頁面: <span id="currentUrl">-</span>
+  </div>
+
+  <div class="location-select">
+    <label for="location">選擇地點:</label>
+    <select id="location">
+      <option value="Sydney">Sydney (雪梨)</option>
+      <option value="Chennai">Chennai (清奈)</option>
+      <option value="IndianOcean">Indian Ocean (印度洋)</option>
+      <option value="Tokyo">Tokyo (東京)</option>
+    </select>
+  </div>
+
+  <div class="url-actions">
+    <button id="goToUrlBtn" class="url-btn">🔗 前往網站</button>
+    <button id="copyUrlBtn" class="url-btn">📋 複製網址</button>
+  </div>
+  
+  <button id="reloadPageBtn" class="reload-btn">🔄 重新整理頁面</button>
+
+  <button id="extractBtn">📄 提取當前頁面資料</button>
+  <button id="extractAllBtn" class="extract-all-btn">📦 一次提取全部地點</button>
+  <button id="downloadBtn" disabled>⬇️ 下載 JSON 檔案</button>
+  <button id="uploadBtn" class="upload-btn" disabled>⬆️ 上傳到資料庫</button>
+  <button id="debugBtn" class="debug-btn">🔍 顯示調試資訊</button>
+
+  <div class="api-settings">
+    <label for="apiUrl">API 網址:</label>
+    <input type="text" id="apiUrl" placeholder="http://localhost:5000">
+  </div>
+
+  <div id="status"></div>
+  <div id="debugInfo"></div>
+
+  <div class="instructions">
+    <strong>使用說明:</strong>
+    <ol>
+      <li><strong>單一地點：</strong>在潮汐網站打開對應地點頁面，選擇地點，點擊「提取當前頁面資料」</li>
+      <li><strong>全部地點：</strong>直接點擊「📦 一次提取全部地點」，系統會自動訪問所有地點並提取資料（需要約15-20秒）</li>
+      <li>點擊「下載 JSON 檔案」保存資料（或直接上傳）</li>
+      <li>點擊「⬆️ 上傳到資料庫」將資料透過 API 直接上傳到 WebApp（請先確認 API 網址設定正確）</li>
+    </ol>
+  </div>
+
+  <!-- 載入所有 JavaScript 模組 -->
+  <script src="config.js"></script>
+  <script src="storage.js"></script>
+  <script src="ui.js"></script>
+  <script src="api.js"></script>
+  <script src="extractor.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

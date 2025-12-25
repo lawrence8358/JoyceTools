@@ -1,0 +1,88 @@
+{
+  "extractTime": "2025-12-25T13:42:29.029Z",
+  "locations": [
+    {
+      "name": "Sydney",
+      "timezone": 10.5,
+      "url": "https://zh.tideschart.com/Australia/New-South-Wales/Sydney",
+      "data": [
+        {
+          "date": "周五 26",
+          "tide1": {
+            "time": "01:18",
+            "value": "▲ 1.34 米",
+            "type": "高潮"
+          },
+          "tide2": {
+            "time": "06:49",
+            "value": "▼ 0.65 米",
+            "type": "低潮"
+          },
+          "tide3": {
+            "time": "13:10",
+            "value": "▲ 1.66 米",
+            "type": "高潮"
+          },
+          "tide4": {
+            "time": "19:55",
+            "value": "▼ 0.44 米",
+            "type": "低潮"
+          }
+        },
+        {
+          "date": "周六 27",
+          "tide1": {
+            "time": "02:08",
+            "value": "▲ 1.38 米",
+            "type": "高潮"
+          },
+          "tide2": {
+            "time": "07:48",
+            "value": "▼ 0.68 米",
+            "type": "低潮"
+          },
+          "tide3": {
+            "time": "14:01",
+            "value": "▲ 1.58 米",
+            "type": "高潮"
+          },
+          "tide4": {
+            "time": "20:40",
+            "value": "▼ 0.46 米",
+            "type": "低潮"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tokyo",
+      "timezone": 9,
+      "url": "https://zh.tideschart.com/Japan/Tokyo",
+      "data": [
+        {
+          "date": "周五 26",
+          "tide1": {
+            "time": "01:49",
+            "value": "▲ 1.71 米",
+            "type": "高潮"
+          },
+          "tide2": {
+            "time": "08:00",
+            "value": "▼ 0.28 米",
+            "type": "低潮"
+          },
+          "tide3": {
+            "time": "14:48",
+            "value": "▲ 1.79 米",
+            "type": "高潮"
+          },
+          "tide4": {
+            "time": "20:48",
+            "value": "▼ 0.34 米",
+            "type": "低潮"
+          }
+        }
+      ]
+    }
+  ]
+}

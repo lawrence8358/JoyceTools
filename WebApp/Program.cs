@@ -13,7 +13,30 @@ namespace WebApp
 
             builder.Services.AddControllers();
 
-            // ���o Configuration 
+            // 設定 CORS (僅允許特定來源)
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("ChromeExtensionPolicy", policy =>
+                {
+                    // 允許的來源
+                    policy.SetIsOriginAllowed(origin =>
+                    {
+                        // 允許 Chrome 擴充功能 (chrome-extension://...)
+                        if (origin.StartsWith("chrome-extension://"))
+                            return true;
+                        
+                        // 允許本機測試
+                        if (origin.StartsWith("http://localhost") || origin.StartsWith("https://localhost"))
+                            return true;
+                        
+                        return false;
+                    })
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+
+            // 取得 Configuration 
 
             builder.Services.AddDbContext<EarthquakeDbContext>(optionsBuilder =>
             {
@@ -25,12 +48,18 @@ namespace WebApp
 
             // Configure the HTTP request pipeline.
 
+            // 啟用路由
+            app.UseRouting();
+
+            // 啟用 CORS（必須在 UseRouting 之後、UseAuthorization 之前）
+            app.UseCors("ChromeExtensionPolicy");
+
             app.UseAuthorization();
 
-            // �ҥιw�]�ɮס]�p index.html�^
+            // 啟用預設檔案（如 index.html）
             app.UseDefaultFiles();
 
-            // �ҥ��R�A�ɮתA��
+            // 啟用靜態檔案服務
             app.UseStaticFiles();
 
             app.MapControllers();

@@ -1,0 +1,57 @@
+{
+  "location": "Sydney",
+  "extractTime": "2025-12-25T13:00:30.972Z",
+  "timezone": 10.5,
+  "url": "https://zh.tideschart.com/Australia/New-South-Wales/Sydney/",
+  "data": [
+    {
+      "location": "Sydney",
+      "date": "2025-12-24T17:18:00.000Z",
+      "height": 6490.65,
+      "type": "High",
+      "timezone": 10.5
+    },
+    {
+      "location": "Sydney",
+      "date": "2025-12-24T18:08:00.000Z",
+      "height": 7480.68,
+      "type": "High",
+      "timezone": 10.5
+    },
+    {
+      "location": "Sydney",
+      "date": "2025-12-24T19:03:00.000Z",
+      "height": 8560.69,
+      "type": "High",
+      "timezone": 10.5
+    },
+    {
+      "location": "Sydney",
+      "date": "2025-12-24T20:01:00.000Z",
+      "height": 10120.66,
+      "type": "High",
+      "timezone": 10.5
+    },
+    {
+      "location": "Sydney",
+      "date": "2025-12-24T21:00:00.000Z",
+      "height": 11290.58,
+      "type": "High",
+      "timezone": 10.5
+    },
+    {
+      "location": "Sydney",
+      "date": "2025-12-24T21:59:00.000Z",
+      "height": 12400.47,
+      "type": "High",
+      "timezone": 10.5
+    },
+    {
+      "location": "Sydney",
+      "date": "2025-12-24T16:17:00.000Z",
+      "height": 6561.88,
+      "type": "High",
+      "timezone": 10.5
+    }
+  ]
+}
