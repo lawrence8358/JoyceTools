@@ -113,10 +113,60 @@ document.addEventListener('DOMContentLoaded', async function () {
         uploadBtn.addEventListener('click', handleUpload);
 
         // API URL 變更時自動保存
-        apiUrlInput.addEventListener('change', handleApiUrlChange);
+        apiUrlInput.addEventListener('change', handleApiUrlChange); 
 
-        // 調試按鈕
-        document.getElementById('debugBtn').addEventListener('click', showDebugInfo);
+        // Ensure bootstrap tab clicks show the tab (workaround for styling interference)
+        const tabButtons = document.querySelectorAll('[data-bs-toggle="tab"]');
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                try {
+                    e.preventDefault();
+                    const tab = new bootstrap.Tab(this);
+                    tab.show();
+                } catch (err) {
+                    // fallback: toggle active classes manually
+                    const target = this.getAttribute('data-bs-target');
+                    document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+                    this.classList.add('active');
+                    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('show','active'));
+                    const pane = document.querySelector(target);
+                    if (pane) pane.classList.add('show','active');
+                }
+            });
+        });
+    }
+
+    /**
+     * 開始一個需要鎖定其他按鈕的動作
+     */
+    function beginAction() {
+        // Disable auxiliary and action buttons while an operation is running
+        document.getElementById('goToUrlBtn').disabled = true;
+        document.getElementById('copyUrlBtn').disabled = true;
+        document.getElementById('extractAllBtn').disabled = true;
+        document.getElementById('extractBtn').disabled = true;
+        document.getElementById('uploadBtn').disabled = true;
+        document.getElementById('downloadBtn').disabled = true;
+        isExtracting = true;
+    }
+
+    /**
+     * 結束動作，依據目前狀態還原按鈕
+     */
+    function endAction() {
+        isExtracting = false;
+        // Re-enable auxiliary buttons
+        document.getElementById('goToUrlBtn').disabled = false;
+        document.getElementById('copyUrlBtn').disabled = false;
+
+        // Re-enable extract buttons
+        document.getElementById('extractAllBtn').disabled = false;
+        document.getElementById('extractBtn').disabled = false;
+
+        // Enable download/upload only when we have extracted data
+        const hasData = !!extractedData;
+        document.getElementById('downloadBtn').disabled = !hasData;
+        document.getElementById('uploadBtn').disabled = !hasData;
     }
 
     /**
@@ -162,9 +212,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     function handleExtractSingle() {
         const location = locationSelect.value;
         const timezone = locationTimezones[location];
-
         showStatus('正在提取資料...', 'info');
-        extractBtn.disabled = true;
+        beginAction();
 
         chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
             const currentTab = tabs[0];
@@ -176,7 +225,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
 
             extractDataFromCurrentPage(location, timezone, async function(success, data, error) {
-                extractBtn.disabled = false;
+                endAction();
                 
                 if (success) {
                     extractedData = {
@@ -209,9 +258,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     async function handleExtractAll() {
         const locations = ['Sydney', 'Chennai', 'IndianOcean', 'Tokyo'];
 
-        extractAllBtn.disabled = true;
-        extractBtn.disabled = true;
-        isExtracting = true;
+        beginAction();
         await saveExtractionState(true, locations, 0);
         showStatus('準備提取所有地點的資料...', 'info');
 
@@ -224,9 +271,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             },
             // 完成回調
             async (allData, completedCount, failedCount) => {
-                extractAllBtn.disabled = false;
-                extractBtn.disabled = false;
-                isExtracting = false;
+                endAction();
                 await saveExtractionState(false, [], 0);
 
                 if (completedCount > 0) {
@@ -246,14 +291,21 @@ document.addEventListener('DOMContentLoaded', async function () {
      * 處理「下載 JSON 檔案」按鈕點擊
      */
     function handleDownload() {
-        downloadJsonFile(extractedData);
+        // disable other actions while download is prepared
+        beginAction();
+        try {
+            downloadJsonFile(extractedData);
+        } finally {
+            // downloadJsonFile triggers a file save quickly; restore button states
+            endAction();
+        }
     }
 
     /**
      * 處理「上傳到資料庫」按鈕點擊
      */
     async function handleUpload() {
-        uploadBtn.disabled = true;
+        beginAction();
         showStatus('⏳ 正在上傳資料...', 'info');
 
         try {
@@ -263,11 +315,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             // 保存 API URL
             await saveState(extractedData, apiUrlInput.value);
         } catch (error) {
-            // console.error('上傳失敗:', error);
             alert(`上傳失敗: ${JSON.stringify(error)}`);
             showStatus(`❌ 上傳失敗: ${error.message}`, 'error');
         } finally {
-            uploadBtn.disabled = false;
+            endAction();
         }
     }
 

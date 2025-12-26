@@ -17,34 +17,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const exists = tideTable !== null && tideTable.querySelectorAll('tbody tr').length > 0;
     console.log('檢查表格:', exists ? '已找到' : '未找到');
     sendResponse({ exists: exists });
-  } else if (request.action === 'debugPageInfo') {
-    // 調試資訊
-    const debugInfo = collectDebugInfo();
-    sendResponse({ debug: debugInfo });
   }
   return true; // 保持訊息通道開啟
 });
 
-/**
- * 收集頁面調試資訊
- */
-function collectDebugInfo() {
-  const tables = document.querySelectorAll('table');
-  let info = `頁面 URL: ${window.location.href}\n\n`;
-  info += `找到的表格數量: ${tables.length}\n\n`;
-  
-  tables.forEach((table, index) => {
-    const rows = table.querySelectorAll('tr');
-    const firstRowText = rows[0]?.innerText.substring(0, 100) || '';
-    info += `表格 ${index + 1}:\n`;
-    info += `  行數: ${rows.length}\n`;
-    info += `  第一行內容: ${firstRowText}...\n`;
-    info += `  class: ${table.className}\n`;
-    info += `  id: ${table.id}\n\n`;
-  });
-  
-  return info;
-}
 
 /**
  * 從頁面中提取潮汐資料（新版：保留原始HTML格式）
@@ -132,7 +108,7 @@ function extractTideDataFromPage(location, timezone) {
   console.log(`提取完成：共 ${tideData.length} 天的資料`);
 
   if (tideData.length === 0) {
-    throw new Error('未能提取到有效的潮汐資料。請點擊「顯示調試資訊」查看詳情。');
+    throw new Error('未能提取到有效的潮汐資料。請確認頁面已載入並重試。');
   }
 
   return tideData;

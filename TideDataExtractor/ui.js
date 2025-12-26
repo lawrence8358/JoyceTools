@@ -15,8 +15,16 @@
  */
 function showStatus(message, type) {
     const statusDiv = document.getElementById('status');
-    statusDiv.textContent = message;
-    statusDiv.className = type;
+    // Map our types to Bootstrap alert classes
+    const typeMap = {
+        success: 'alert alert-success',
+        error: 'alert alert-danger',
+        info: 'alert alert-info',
+        processing: 'alert alert-dark'
+    };
+
+    const cls = typeMap[type] || 'alert alert-secondary';
+    statusDiv.innerHTML = `<div class="${cls} mb-0">${message}</div>`;
     statusDiv.style.display = 'block';
 
     if (type === 'success' && !message.includes('進度')) {
@@ -60,39 +68,4 @@ function downloadJsonFile(data, filename) {
     });
 }
 
-/**
- * 顯示除錯資訊
- */
-function showDebugInfo() {
-    const debugInfo = document.getElementById('debugInfo');
-    if (debugInfo.style.display === 'none' || !debugInfo.style.display) {
-        debugInfo.style.display = 'block';
-
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            const currentTab = tabs[0];
-
-            chrome.tabs.sendMessage(
-                currentTab.id,
-                { action: 'debugPageInfo' },
-                function (response) {
-                    if (chrome.runtime.lastError) {
-                        debugInfo.textContent = `調試資訊:
-
-當前 URL: ${currentTab.url}
-
-錯誤: ${chrome.runtime.lastError.message}
-
-請確保:
-1. 您在 zh.tideschart.com 網站上
-2. 已重新整理頁面 (F5)
-3. 擴充功能已正確載入`;
-                    } else if (response) {
-                        debugInfo.textContent = `調試資訊:\n\n${response.debug}`;
-                    }
-                }
-            );
-        });
-    } else {
-        debugInfo.style.display = 'none';
-    }
-}
+/* debug UI removed */
