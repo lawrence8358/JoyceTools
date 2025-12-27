@@ -115,23 +115,13 @@ document.addEventListener('DOMContentLoaded', async function () {
         // API URL 變更時自動保存
         apiUrlInput.addEventListener('change', handleApiUrlChange); 
 
-        // Ensure bootstrap tab clicks show the tab (workaround for styling interference)
+        // 標籤頁切換處理 (使用 Bootstrap)
         const tabButtons = document.querySelectorAll('[data-bs-toggle="tab"]');
         tabButtons.forEach(btn => {
             btn.addEventListener('click', function (e) {
-                try {
-                    e.preventDefault();
-                    const tab = new bootstrap.Tab(this);
-                    tab.show();
-                } catch (err) {
-                    // fallback: toggle active classes manually
-                    const target = this.getAttribute('data-bs-target');
-                    document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-                    this.classList.add('active');
-                    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('show','active'));
-                    const pane = document.querySelector(target);
-                    if (pane) pane.classList.add('show','active');
-                }
+                e.preventDefault();
+                const tab = new bootstrap.Tab(this);
+                tab.show();
             });
         });
     }
