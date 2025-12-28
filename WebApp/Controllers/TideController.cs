@@ -14,6 +14,9 @@ namespace WebApp.Controllers
 
         private readonly EarthquakeDbContext _dbContext;
         private readonly IConfiguration _configuration;
+        
+        // 台北時區 UTC+8
+        private static readonly TimeSpan TaipeiTimezoneOffset = TimeSpan.FromHours(8);
 
         #endregion
 
@@ -76,17 +79,16 @@ namespace WebApp.Controllers
         {
             var query = _dbContext.Tide.AsQueryable();
 
-            // 如果有指定開始日期，則加入開始日期篩選條件
+            // 資料庫中的時間已經是 UTC+8，直接使用日期部分進行比較
             if (model.Sdate.HasValue)
             {
-                var sdate = model.Sdate.Value.ToLocalTime().Date;
+                var sdate = model.Sdate.Value.Date;
                 query = query.Where(x => x.Date >= sdate);
             }
 
-            // 如果有指定結束日期，則加入結束日期篩選條件
             if (model.Edate.HasValue)
             {
-                var edate = model.Edate.Value.ToLocalTime().Date.AddDays(1);
+                var edate = model.Edate.Value.Date.AddDays(1);
                 query = query.Where(x => x.Date < edate);
             }
 
@@ -170,8 +172,10 @@ namespace WebApp.Controllers
                 return 0;
 
             var importedCount = 0;
-            var currentYear = DateTime.Now.Year;
-            var currentMonth = DateTime.Now.Month;
+            // 使用台北時區 (UTC+8) 的當前時間，不依賴伺服器本地時區
+            var taipeiNow = DateTimeOffset.UtcNow.ToOffset(TaipeiTimezoneOffset);
+            var currentYear = taipeiNow.Year;
+            var currentMonth = taipeiNow.Month;
 
             foreach (var dayData in location.Data)
             {
@@ -219,9 +223,10 @@ namespace WebApp.Controllers
                     var dateTime = DateTime.SpecifyKind(date.Date + time, DateTimeKind.Unspecified);
                     var dateTimeOffset = new DateTimeOffset(dateTime, TimeSpan.FromHours(timezone));
 
+                    // 統一轉換到台北時區 (UTC+8)，不依賴伺服器本地時區
                     result.Add(new TideDtoModel
                     {
-                        Date = dateTimeOffset.ToLocalTime(),
+                        Date = dateTimeOffset.ToOffset(TaipeiTimezoneOffset),
                         Location = location,
                         TideHeight = height
                     });
