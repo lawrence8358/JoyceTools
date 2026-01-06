@@ -1,7 +1,7 @@
-using Lib.EFCore;
-using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Lib.EFCore;
+using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
 
 namespace WebApp.Controllers
@@ -14,7 +14,7 @@ namespace WebApp.Controllers
 
         private readonly EarthquakeDbContext _dbContext;
         private readonly IConfiguration _configuration;
-        
+
         // 台北時區 UTC+8
         private static readonly TimeSpan TaipeiTimezoneOffset = TimeSpan.FromHours(8);
 
@@ -171,26 +171,40 @@ namespace WebApp.Controllers
             if (location.Data == null || !location.Data.Any())
                 return 0;
 
-            var importedCount = 0;
             // 使用台北時區 (UTC+8) 的當前時間，不依賴伺服器本地時區
             var taipeiNow = DateTimeOffset.UtcNow.ToOffset(TaipeiTimezoneOffset);
             var currentYear = taipeiNow.Year;
             var currentMonth = taipeiNow.Month;
 
+            // 先收集所有潮汐資料（已轉換為台北時區）
+            var allTideData = new List<TideDtoModel>();
+
             foreach (var dayData in location.Data)
             {
                 try
                 {
-                    var tideDtoModels = ParseDayData(dayData, location.Name, location.Timezone, currentYear, currentMonth);
-                    if (tideDtoModels.Any())
-                    {
-                        _dbContext.AddOrUpdateTideEntity(tideDtoModels);
-                        importedCount++;
-                    }
+                    var tides = ParseDayData(dayData, location.Name, location.Timezone, currentYear, currentMonth);
+                    allTideData.AddRange(tides);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"解析 {location.Name} 資料失敗: {ex.Message}");
+                }
+            }
+
+            // 按台北時間日期重新分組（解決跨日問題）
+            var groupedByDate = allTideData
+                .GroupBy(t => t.Date.Date)
+                .OrderBy(g => g.Key);
+
+            var importedCount = 0;
+            foreach (var group in groupedByDate)
+            {
+                var dayTides = group.OrderBy(t => t.Date).ToList();
+                if (dayTides.Any())
+                {
+                    _dbContext.AddOrUpdateTideEntity(dayTides);
+                    importedCount++;
                 }
             }
 
@@ -254,9 +268,10 @@ namespace WebApp.Controllers
 
             var day = int.Parse(dayMatch.Groups[1].Value);
 
-            // 處理跨月份的情況
+            // 處理跨月份的情況（使用台北時區的當前日期，而非伺服器本地時間）
+            var taipeiToday = DateTimeOffset.UtcNow.ToOffset(TaipeiTimezoneOffset).Date;
             var date = new DateTime(year, month, day);
-            if (date < DateTime.Now.Date.AddDays(-10))
+            if (date < taipeiToday.AddDays(-10))
             {
                 if (month == 12)
                     date = new DateTime(year + 1, 1, day);
