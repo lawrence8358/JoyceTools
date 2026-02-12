@@ -138,7 +138,7 @@ namespace DataSyncConsoleTools.Utilites
             if (!string.IsNullOrEmpty(line)) // E= 開頭的資料行，這個是抓取經緯度和深度的資料行
             {
                 // 25/05/1618:35:24
-                var datetime = ExtractTextFromImage(imagePath, x: 100, y: 370, width: 420, height: 40, "X=0123456789:/");
+                var datetime = ExtractTextFromImage(imagePath, x: 100, y: 370, width: 450, height: 40, "X=0123456789:/");
                 datetime = datetime?.Split('=')[1].Replace(" ", "").Trim();
 
                 if (datetime == null || datetime.Length != 16 && !datetime.StartsWith("25/"))
