@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "潮汐資料擷取器",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "description": "擷取潮汐資料表格並匯出為 JSON 檔案或直接上傳至資料庫，支援自動排程功能",
   "permissions": [
     "activeTab",
